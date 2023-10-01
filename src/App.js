@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import './App.css';
+import logo from './logo.png';
 // Replace with your contract's ABI
 const contractABI = [
   {
@@ -199,7 +200,7 @@ const contractABI = [
   }
 ]
 // Replace with your contract's deployed address
-const contractAddress = "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
+const contractAddress = "0x09635F643e140090A9A8Dcd712eD6285858ceBef";
 
 // function App() {
 //     const [provider, setProvider] = useState(null);
@@ -359,6 +360,8 @@ function App() {
 
   useEffect(() => {
     getInfo()
+    getBorrower()
+    getLender()
     const loadBlockchainData = async () => {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -368,6 +371,7 @@ function App() {
 
         try {
           const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
           setAccount(accounts[0]);
         } catch (err) {
           console.error("User denied account access:", err);
@@ -456,18 +460,18 @@ function App() {
     let errorString = e.toString()
     const startIndex = errorString.indexOf(startStr);
 
-    if(startIndex !== -1) {
-        const substring = errorString.substring(startIndex + startStr.length);
-        const endIndex = substring.indexOf(endStr);
-        
-        if(endIndex !== -1) {
-            const result = substring.substring(0, endIndex);
-            alert(result); // Should print: Loan hasn't been repaid yet
-        } else {
-            console.error(e);
-        }
+    if (startIndex !== -1) {
+      const substring = errorString.substring(startIndex + startStr.length);
+      const endIndex = substring.indexOf(endStr);
+
+      if (endIndex !== -1) {
+        const result = substring.substring(0, endIndex);
+        alert(result); // Should print: Loan hasn't been repaid yet
+      } else {
+        console.error(e);
+      }
     } else {
-        console.log(e);
+      console.log(e);
     }
   }
   const getInfo = async () => {
@@ -487,47 +491,105 @@ function App() {
       format(e)
     }
   };
+  const getBorrower = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-  function timeConverter(UNIX_timestamp){
+    const contract = new ethers.Contract(contractAddress, contractABI, provider)
+    try {
+      const borrower = await contract.getBorrower();
+      setBorrower(borrower);
+    } catch (e) {
+      format(e)
+    }
+  };
+  const getLender = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const contract = new ethers.Contract(contractAddress, contractABI, provider)
+    try {
+      const lender = await contract.getLender();
+      setLender(lender);
+    } catch (e) {
+      format(e)
+    }
+  };
+  function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var year = a.getFullYear();
     var month = months[a.getMonth()];
     var date = a.getDate();
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
-    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    var time = date + ' ' + month + ' ' + year;
     return time;
   }
 
-  if(done === 0)
-  return (
-    <div>
-      <p>Principal Amount: {principal} ETH</p>
-      <p>Money Owed: {balance} ETH</p>
-      <p>Interest Rate: {interestRate}% Annually</p>
-      <p>Repay By: {repayBy}</p>
-      <p>Collateral: {collateralBalance} ETH paid / {collateral} ETH Total</p>
-      <input type="text" placeholder="Loan Amount" value={loanAmount} onChange={(e) => setLoanAmount(e.target.value)} />
-      <button onClick={handleLoan}>Loan</button>
+  console.log("acc: " + account);
+  console.log("borr: " + borrower);
+  console.log("lend: " + lender);
+  console.log(done)
+  if (done === 0) {
+    if (account.toLowerCase() == lender.toLowerCase()) {
+      return (
+        <div>
+          <img src={logo}></img>
+          <h1>Lender</h1>
+          <p><b>Principal Amount:</b> {principal} ETH</p>
+          <p><b>Money Owed:</b> {balance} ETH</p>
+          <p><b>Annual Interest Rate:</b> {interestRate}%</p>
+          <p><b>Repay By:</b> {repayBy}</p>
+          <p><b>Collateral</b>: {collateralBalance} ETH paid / {collateral} ETH Total</p>
+          <input type="text" placeholder="Loan Amount" value={loanAmount} onChange={(e) => setLoanAmount(e.target.value)} />
+          <button onClick={handleLoan}><b>Give Loan</b></button>
+          <br />
+          <br />
+          <button onClick={handleLiquidate}><b>Liquidate</b></button>
+          <br />
+          <br />
 
-      <button onClick={handleLiquidate}>Liquidate</button>
-      <br />
-      <br />
-      <input type="text" placeholder="Repay Amount" value={repayAmount} onChange={(e) => setRepayAmount(e.target.value)} />
-      <button onClick={handleRepay}>Repay</button>
 
-      <input type="text" placeholder="Collateral Amount" value={collateralDepositAmount} onChange={(e) => setCollateralDepositAmount(e.target.value)} />
-      <button onClick={handleDepositCollateral}>Deposit Collateral</button>
+        </div>)
+    } else if (account.toLowerCase() == borrower.toLowerCase()) {
+      return (
+        <div>
+          <img src={logo}></img>
+          <h1>Borrower</h1>
 
-    </div>
-  );
-  return (
-    <div>
-      <h2>Loan completed. Please create a new contract</h2>
-    </div>
-  )
+          <p><b>Principal Amount:</b> {principal} ETH</p>
+          <p><b>Money Owed:</b> {balance} ETH</p>
+          <p><b>Annual Interest Rate:</b> {interestRate}%</p>
+          <p><b>Repay By:</b> {repayBy}</p>
+          <p><b>Collateral:</b> {collateralBalance} ETH paid / {collateral} ETH Total</p>
+          <input type="text" placeholder="Collateral Amount" value={collateralDepositAmount} onChange={(e) => setCollateralDepositAmount(e.target.value)} />
+          <button onClick={handleDepositCollateral}><b>Deposit Collateral</b></button>
+          <br />
+          <br />
+          <input type="text" placeholder="Repay Amount" value={repayAmount} onChange={(e) => setRepayAmount(e.target.value)} />
+          <button onClick={handleRepay}><b>Repay Loan</b></button>
+          <br />
+          <br />
+        </div>
+
+      );
+    } else {
+      return (
+        <div>
+          <img src={logo}></img>
+          <h1>No access</h1>
+        </div>
+      )
+    }
+  } else {
+
+
+    return (
+      <div>
+        <h2>Loan completed. Please create a new contract</h2>
+      </div>
+    )
+  }
 }
 
 export default App;

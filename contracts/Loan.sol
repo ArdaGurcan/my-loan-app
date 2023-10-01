@@ -96,6 +96,7 @@ contract Loan {
         require(msg.sender == borrower, "Only the borrower can deposit the collateral");
         require(!depositedCollateral, "Collateral already deposited");
         require(msg.value <= collateral - collateralBalance, "Overpayment of collateral is not allowed");
+        require(!hasDefaulted(), "The loan has defaulted");
 
         collateralBalance += msg.value;
         if (collateralBalance == collateral) {
