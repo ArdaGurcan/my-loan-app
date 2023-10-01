@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# LoanSmart
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Try it yourself
 
-## Available Scripts
+```sh
+npm install
+npx hardhat compile
+npx hardhat node
+npx hardhat run scripts/deploy.js --network localhost
+npm start
+```
 
-In the project directory, you can run:
 
-### `npm start`
+## Inspiration
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+After watching _The Big Short_ (a movie about the 2008 financial crisis), I realized just how much of an effect the banks have on loans despite supposedly being just a middleman. 
+I thought if we turned loans into immutable, objective, yet flexible contracts, we would have a much easier time.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## What it does
 
-### `npm test`
+1. Initially, a loan in the form of a smart contract is deployed by the lender,specifying the borrower, the principal amount, annual interest rate, loan term, and collateral.
+2. Next, the borrower has to pay the collateral. The payment can be completed over any number of transfers.
+3. Then the lender needs to put down the initially specified sum of money.
+4. The borrower either manages to pay the loan back over time, or the loan defaults.
+5. If the loan is paid in time, the lender gets the money, and the collateral is returned to the borrower. Otherwise, the lender keeps the collateral and any additional payments
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Smart contracts offer immutability and transparency, ensuring that these loans are secure, tamper-proof, and executed precisely as agreed, minimizing fraud and enhancing trust among parties.
+- Automated execution of the contract and reduction in intermediaries and manual interventions lead to significant time and cost savings, making processes more efficient and streamlined.
+- Smart contracts allow for tailored agreements and conditions, and the tokenization of assets can facilitate fractional ownership and investment
 
-### `npm run build`
+## How I built it
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+I built the contract using the Solidity language and performed extensive tests on Remix to make sure edge cases were covered. The frontend was build using JavaScript and React.JS and it allows the borrower and the lender to interact with the contract.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Challenges I ran into
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+I realized despite their simple appearance, the loans had quite complex functionalites as they had to check for many edge cases and sequential action on both parties' sides. Afterwards, integrating the Solidity smart contract into a React frontend was pretty difficult at time.
 
-### `npm run eject`
+## Accomplishments that I'm proud of
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This was a relatively short hackathon and I'm proud that I was able to start and finish my project within before the submission deadline
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## What I learned
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+I learned a lot about Solidity, React, and most importantly loans.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## What's next for LoanSmart
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+I'll implement more complex loan functionality to give users more flexibility over the contracts.
